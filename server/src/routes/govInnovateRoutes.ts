@@ -14,7 +14,8 @@ import {
 import {
   getApplicationsController,
   createApplicationController,
-  assignEvaluatorsController
+  assignEvaluatorsController,
+  updateApplicationStatusController
 } from '../controllers/applicationController';
 import {
   getEvaluationsController,
@@ -56,6 +57,7 @@ router.post('/startups/profile', isAuthenticated, updateStartupProfileController
 router.get('/applications', isAuthenticated, getApplicationsController);
 router.post('/applications', isAuthenticated, createApplicationController);
 router.post('/applications/:id/assign', isAuthenticated, assignEvaluatorsController);
+router.put('/applications/:id/status', isAuthenticated, updateApplicationStatusController);
 
 // Evaluation Routes
 router.get('/evaluations', isAuthenticated, getEvaluationsController);

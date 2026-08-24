@@ -270,3 +270,56 @@ export const assignEvaluatorsController = async (req: Request, res: Response, ne
     next(error);
   }
 };
+
+export const updateApplicationStatusController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = (req as any).user?.id;
+    const userRole = (req as any).user?.role;
+    const userName = (req as any).user?.name || 'Officer';
+
+    if (userRole !== 'GOVERNMENT') {
+      return res.status(403).json({
+        success: false,
+        message: 'Only Government Officers can update application status',
+      });
+    }
+
+    const id = req.params.id as string;
+    const { eligibilityStatus, reason } = req.body;
+
+    const application = await prisma.application.findUnique({
+      where: { id },
+      include: { startup: true, challenge: true },
+    });
+
+    if (!application) {
+      return res.status(404).json({
+        success: false,
+        message: 'Application not found',
+      });
+    }
+
+    const updated = await prisma.application.update({
+      where: { id },
+      data: { eligibilityStatus },
+    });
+
+    // Create audit log for manual intervention
+    await prisma.auditLog.create({
+      data: {
+        userId,
+        action: 'Application Status Override',
+        details: `Officer "${userName}" manually changed application ${id} status from "${application.eligibilityStatus}" to "${eligibilityStatus}". Reason: ${reason || 'N/A'}`,
+      },
+    });
+
+    logger.info('Application status overridden successfully', { applicationId: id, status: eligibilityStatus });
+
+    return res.json({
+      success: true,
+      data: updated,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

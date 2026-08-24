@@ -97,6 +97,39 @@ export default function GovernmentDashboard() {
     }
   };
 
+  const handleManualEligibilityOverride = async (appId: string, status: string) => {
+    const reason = window.prompt(`Please enter the manual override reason for marking this application as ${status}:`);
+    if (reason === null) return;
+    
+    try {
+      const response = await api.put(`/applications/${appId}/status`, {
+        eligibilityStatus: status,
+        reason: reason || "Manual Override by Officer"
+      });
+      if (response.status === 200) {
+        toast.success(`Application marked as ${status}!`);
+        fetchData();
+      }
+    } catch (error) {
+      toast.error("Failed to override application eligibility status");
+    }
+  };
+
+  const handleShortlistApplication = async (appId: string) => {
+    try {
+      const response = await api.put(`/applications/${appId}/status`, {
+        eligibilityStatus: "SHORTLISTED",
+        reason: "Evaluations completed and approved by Officer"
+      });
+      if (response.status === 200) {
+        toast.success("Application successfully shortlisted for pilot!");
+        fetchData();
+      }
+    } catch (error) {
+      toast.error("Failed to shortlist application");
+    }
+  };
+
   const handleAssignEvaluator = async () => {
     if (!selectedEvaluator || !assigningAppId) {
       toast.error("Please select an evaluator");
@@ -575,6 +608,26 @@ export default function GovernmentDashboard() {
 
                   {/* Actions */}
                   <div className="flex space-x-3 pt-3 border-t border-stone-100 dark:border-stone-800 text-xs">
+                    {app.eligibilityStatus === "ELIGIBILITY_REVIEW" && (
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => handleManualEligibilityOverride(app.id, "ELIGIBLE")}
+                          className="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl flex items-center space-x-1"
+                        >
+                          <Check className="h-3.5 w-3.5" />
+                          <span>Approve Eligibility (Override)</span>
+                        </button>
+                        <button
+                          onClick={() => handleManualEligibilityOverride(app.id, "INELIGIBLE")}
+                          className="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 font-bold rounded-xl flex items-center space-x-1 dark:bg-red-950/20 dark:text-red-400"
+                        >
+                          <span>Reject</span>
+                        </button>
+                      </div>
+                    )}
+                    {app.eligibilityStatus === "INELIGIBLE" && (
+                      <span className="text-red-600 font-bold">Ineligible (Rejected)</span>
+                    )}
                     {app.eligibilityStatus === "ELIGIBLE" && (
                       <button
                         onClick={() => setAssigningAppId(app.id)}
@@ -585,9 +638,27 @@ export default function GovernmentDashboard() {
                       </button>
                     )}
                     {app.eligibilityStatus === "UNDER_EVALUATION" && (
-                      <div className="flex items-center space-x-2 text-stone-500">
-                        <Clock className="h-4 w-4 text-amber-500" />
-                        <span>Awaiting Evaluator Scoring</span>
+                      <div className="flex flex-col space-y-2 w-full">
+                        {app.evaluations?.map((ev: any) => (
+                          <div key={ev.id} className="text-[11px] text-stone-500 dark:text-stone-400 bg-stone-50 dark:bg-stone-900/60 p-2 rounded-xl border border-stone-200/40">
+                            <span className="font-bold block">
+                              {ev.evaluator.name}: {ev.recommendation === 'PENDING' ? 'Awaiting Score' : `Score: ${ev.totalScore}/100 (${ev.recommendation})`}
+                            </span>
+                            {ev.comments && <p className="italic mt-0.5">"{ev.comments}"</p>}
+                          </div>
+                        ))}
+                        <div className="flex items-center space-x-2 pt-2">
+                          <Clock className="h-4 w-4 text-amber-500 animate-pulse" />
+                          <span className="text-stone-500 font-bold text-[11px] mr-2">Evaluation Review State</span>
+                          {app.evaluations?.some((ev: any) => ev.recommendation !== 'PENDING' && ev.recommendation !== 'CONFLICT_BLOCKED') && (
+                            <button
+                              onClick={() => handleShortlistApplication(app.id)}
+                              className="px-3.5 py-1.5 bg-teal-500 hover:bg-teal-600 text-white font-bold rounded-xl flex items-center space-x-1"
+                            >
+                              <span>Shortlist Solution</span>
+                            </button>
+                          )}
+                        </div>
                       </div>
                     )}
                     {app.eligibilityStatus === "SHORTLISTED" && (
