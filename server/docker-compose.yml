@@ -1,0 +1,16 @@
+services:
+  backend:
+
+    build: .
+
+    image: template-api:latest
+
+    container_name: template-api
+
+    env_file:
+      - .env
+
+    ports:
+      - "8080:8080"
+
+    restart: unless-stopped

@@ -1,0 +1,192 @@
+openapi: 3.1.0
+info:
+  title: Reusable API Template
+  version: 1.0.0
+  description: |
+    Generic OpenAPI starter template for backend APIs.
+    Use this as a base for any project and replace the resource names as needed.
+
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Local development
+  - url: https://api.example.com/v1
+    description: Production
+
+tags:
+  - name: Health
+  - name: Auth
+  - name: Users
+
+security:
+  - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+        - success
+        - message
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: Something went wrong
+        errors:
+          type: array
+          items:
+            type: string
+          example: ["field is required"]
+
+    SuccessResponse:
+      type: object
+
+      required:
+        - success
+        - message
+
+      properties:
+        success:
+          type: boolean
+          example: true
+
+        message:
+          type: string
+          example: Operation successful
+    PaginationMeta:
+      type: object
+      required:
+        - page
+        - limit
+        - total
+        - hasMore
+      properties:
+        page:
+          type: integer
+          example: 1
+        limit:
+          type: integer
+          example: 20
+        total:
+          type: integer
+          example: 150
+        hasMore:
+          type: boolean
+          example: true
+    
+    User:
+      required:
+        - id
+        - email
+        - name
+        - onboardingCompleted
+        - username
+
+      properties:
+        id:
+          type: string
+          format: uuid
+
+        name:
+          type: string
+
+        email:
+          type: string
+
+        onboardingCompleted:
+          type: boolean
+
+        username:
+          type: string
+
+        avatarUrl:
+          type: string
+          nullable: true
+
+    #################################################
+    # REQUEST DTOs
+    #################################################
+
+    SampleRequest:
+      type: object
+
+      required:
+        - sample
+      properties:
+        sample:
+          type: string
+          maxLength: 2048
+
+    #################################################
+    # RESPONSE DTOs
+    #################################################
+
+    AuthResponse:
+      type: object
+
+      required:
+        - success
+        - user
+
+      properties:
+        success:
+          type: boolean
+
+        user:
+          $ref: '#/components/schemas/User'
+
+
+paths:
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Health check
+      security: []
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                  - message
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: API is running
+
+  /sample-endpoint:
+    get:
+      tags:
+        - Auth
+      summary: sample
+      security: []
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SampleRequest'
+      responses:
+        '200':
+          description: API for sample
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/SuccessResponse'
+
