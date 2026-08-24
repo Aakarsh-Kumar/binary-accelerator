@@ -4,14 +4,93 @@
  */
 
 export interface paths {
-    "/health": {
+    "/auth/login": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Health check */
+        get?: never;
+        put?: never;
+        /** Login user */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        email: string;
+                        password: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Logged in successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AuthResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Logout user */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Logged out successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SuccessResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get current authenticated user */
         get: {
             parameters: {
                 query?: never;
@@ -21,18 +100,13 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description API is healthy */
+                /** @description User profiles fetched */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            /** @example true */
-                            success: boolean;
-                            /** @example API is running */
-                            message: string;
-                        };
+                        "application/json": components["schemas"]["AuthResponse"];
                     };
                 };
             };
@@ -45,15 +119,37 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/sample-endpoint": {
+    "/challenges": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** sample */
+        /** Get list of challenges */
         get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description List of challenges */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ChallengeResponse"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Create outcome challenge */
+        post: {
             parameters: {
                 query?: never;
                 header?: never;
@@ -62,11 +158,193 @@ export interface paths {
             };
             requestBody: {
                 content: {
-                    "application/json": components["schemas"]["SampleRequest"];
+                    "application/json": components["schemas"]["ChallengeRequest"];
                 };
             };
             responses: {
-                /** @description API for sample */
+                /** @description Challenge created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ChallengeResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/challenges/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get challenge details */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Challenge details */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ChallengeResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/startups/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Save startup profile details */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["StartupProfileRequest"];
+                };
+            };
+            responses: {
+                /** @description Profile updated */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["StartupProfileResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/applications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List challenge applications */
+        get: {
+            parameters: {
+                query?: {
+                    challengeId?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Application records */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApplicationResponse"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Apply to challenge with solution */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ApplicationRequest"];
+                };
+            };
+            responses: {
+                /** @description Application submitted */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApplicationResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/applications/{id}/assign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Assign evaluators to application */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["AssignEvaluatorsRequest"];
+                };
+            };
+            responses: {
+                /** @description Evaluators assigned */
                 200: {
                     headers: {
                         [name: string]: unknown;
@@ -77,8 +355,501 @@ export interface paths {
                 };
             };
         };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/evaluations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List evaluations */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description List of evaluations */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["EvaluationResponse"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Submit evaluator score */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["EvaluationRequest"];
+                };
+            };
+            responses: {
+                /** @description Evaluation submitted */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["EvaluationResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pilots": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List pilots */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description List of pilots */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PilotResponse"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Initialize startup pilot */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["PilotRequest"];
+                };
+            };
+            responses: {
+                /** @description Pilot initialized */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PilotResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pilots/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get details of active pilot */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Pilot details with KPIs & Milestones */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PilotResponse"];
+                    };
+                };
+            };
+        };
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pilots/{id}/kpis/{kpiId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update pilot KPI metrics */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    kpiId: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["UpdateKpiRequest"];
+                };
+            };
+            responses: {
+                /** @description KPI updated */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SuccessResponse"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pilots/{id}/milestones/{milestoneId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update pilot milestone status/evidence */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    milestoneId: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["UpdateMilestoneRequest"];
+                };
+            };
+            responses: {
+                /** @description Milestone evidence uploaded */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SuccessResponse"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pilots/{id}/milestones/{milestoneId}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Approve pilot milestone and release payment status */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    milestoneId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Milestone approved and paid */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SuccessResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pilots/{id}/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Submit validator evaluation results */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ValidationRequest"];
+                };
+            };
+            responses: {
+                /** @description Validation submitted */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SuccessResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pilots/{id}/passport": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get generated passport detail */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Pilot Passport detail */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PilotPassportResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Generate a Pilot Passport */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Passport generated */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PassportGenerationResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/passports/repository": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Query evidence repository */
+        get: {
+            parameters: {
+                query?: {
+                    query?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Filtered passport details */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PilotPassportResponse"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/audits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all system audit events */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description System audits list */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AuditLogResponse"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/demo/reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reset and seed demo databases */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Database successfully seeded */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SuccessResponse"];
+                    };
+                };
+            };
+        };
         delete?: never;
         options?: never;
         head?: never;
@@ -107,31 +878,252 @@ export interface components {
             /** @example Operation successful */
             message: string;
         };
-        PaginationMeta: {
-            /** @example 1 */
-            page: number;
-            /** @example 20 */
-            limit: number;
-            /** @example 150 */
-            total: number;
-            /** @example true */
-            hasMore: boolean;
-        };
         User: {
-            /** Format: uuid */
             id: string;
-            name: string;
             email: string;
+            name: string;
+            role: string;
             onboardingCompleted: boolean;
             username: string;
             avatarUrl?: string | null;
         };
-        SampleRequest: {
-            sample: string;
-        };
         AuthResponse: {
             success: boolean;
             user: components["schemas"]["User"];
+            token?: string;
+        };
+        ChallengeRequest: {
+            title: string;
+            department: string;
+            sector: string;
+            problemDescription: string;
+            baseline: string;
+            expectedOutcome: string;
+            budget: number;
+            duration: string;
+            location: string;
+            eligibility: string;
+            successKpis: string;
+            status: string;
+        };
+        ChallengeResponse: {
+            id: string;
+            title: string;
+            department: string;
+            sector: string;
+            problemDescription: string;
+            baseline: string;
+            expectedOutcome: string;
+            budget: number;
+            duration: string;
+            location: string;
+            eligibility: string;
+            successKpis: string;
+            status: string;
+            createdById: string;
+            createdAt: string;
+        };
+        StartupProfileRequest: {
+            name: string;
+            industry: string;
+            technology: string;
+            teamSize: number;
+            yearsOperating: number;
+            productDescription: string;
+            deployments: string;
+            certifications: string;
+        };
+        StartupProfileResponse: {
+            id: string;
+            userId: string;
+            name: string;
+            industry: string;
+            technology: string;
+            teamSize: number;
+            yearsOperating: number;
+            productDescription: string;
+            deployments: string;
+            certifications: string;
+            createdAt: string;
+        };
+        ApplicationRequest: {
+            challengeId: string;
+            proposedSolution: string;
+            technicalApproach: string;
+            implementationPlan: string;
+            expectedImpact: string;
+            pilotPlan: string;
+            estimatedCost: number;
+            supportingDocuments: string;
+        };
+        ApplicationResponse: {
+            id: string;
+            challengeId: string;
+            startupId: string;
+            proposedSolution: string;
+            technicalApproach: string;
+            implementationPlan: string;
+            expectedImpact: string;
+            pilotPlan: string;
+            estimatedCost: number;
+            supportingDocuments: string;
+            eligibilityStatus: string;
+            compatibilityScore: number;
+            matchDetails: string;
+            createdAt: string;
+            challenge?: components["schemas"]["ChallengeResponse"];
+            startup?: components["schemas"]["StartupProfileResponse"];
+        };
+        AssignEvaluatorsRequest: {
+            evaluatorIds: string[];
+        };
+        EvaluationRequest: {
+            applicationId: string;
+            hasConflict: boolean;
+            scoreTechnicalFit: number;
+            scoreProblemFit: number;
+            scoreInnovation: number;
+            scoreScalability: number;
+            scoreCostEffectiveness: number;
+            scoreCybersecurity: number;
+            scoreTeamCapability: number;
+            comments: string;
+            strengths: string;
+            risks: string;
+            recommendation: string;
+        };
+        EvaluationResponse: {
+            id: string;
+            applicationId: string;
+            evaluatorId: string;
+            hasConflict: boolean;
+            scoreTechnicalFit: number;
+            scoreProblemFit: number;
+            scoreInnovation: number;
+            scoreScalability: number;
+            scoreCostEffectiveness: number;
+            scoreCybersecurity: number;
+            scoreTeamCapability: number;
+            totalScore: number;
+            comments: string;
+            strengths: string;
+            risks: string;
+            recommendation: string;
+            createdAt: string;
+            evaluator?: components["schemas"]["User"];
+        };
+        PilotKpiResponse: {
+            id: string;
+            name: string;
+            unit: string;
+            baseline: string;
+            target: string;
+            minimum: string;
+            currentValue: string | null;
+            evidenceUrl?: string | null;
+            status: string;
+        };
+        PilotMilestoneResponse: {
+            id: string;
+            name: string;
+            description: string;
+            deadline: string;
+            deliverable: string;
+            paymentAmount: number;
+            status: string;
+            evidenceUrl?: string | null;
+            paymentStatus: string;
+        };
+        PilotValidationResponse: {
+            id: string;
+            validatorId: string;
+            validatorName: string;
+            startupClaim: string;
+            target: string;
+            evidence: string;
+            measurementMethod: string;
+            independentResult: string;
+            status: string;
+            comments: string;
+        };
+        PilotPassportResponse: {
+            id: string;
+            pilotId: string;
+            passportNumber: string;
+            data: string;
+            scaleScore: number;
+            recommendation: string;
+            createdAt: string;
+        };
+        PilotResponse: {
+            id: string;
+            startupId: string;
+            challengeId: string;
+            applicationId: string;
+            location: string;
+            startDate: string;
+            endDate: string;
+            budget: number;
+            objectives: string;
+            status: string;
+            scaleDecision?: string | null;
+            scaleScore?: number | null;
+            createdAt: string;
+            challenge?: components["schemas"]["ChallengeResponse"];
+            startup?: components["schemas"]["StartupProfileResponse"];
+            kpis?: components["schemas"]["PilotKpiResponse"][];
+            milestones?: components["schemas"]["PilotMilestoneResponse"][];
+            validations?: components["schemas"]["PilotValidationResponse"][];
+            passports?: components["schemas"]["PilotPassportResponse"][];
+        };
+        AuditLogResponse: {
+            id: string;
+            action: string;
+            details: string;
+            timestamp: string;
+            user?: components["schemas"]["User"];
+        };
+        PilotRequest: {
+            applicationId: string;
+            startDate: string;
+            endDate: string;
+            location: string;
+            budget: number;
+            objectives: string;
+            kpis: {
+                name: string;
+                unit: string;
+                baseline: string;
+                target: string;
+                minimum: string;
+            }[];
+            milestones: {
+                name: string;
+                description: string;
+                deadline: string;
+                deliverable: string;
+                paymentAmount: number;
+            }[];
+        };
+        UpdateKpiRequest: {
+            currentValue: string;
+            evidenceUrl: string;
+        };
+        UpdateMilestoneRequest: {
+            evidenceUrl: string;
+        };
+        ValidationRequest: {
+            startupClaim: string;
+            target: string;
+            evidence: string;
+            measurementMethod: string;
+            independentResult: string;
+            status: string;
+            comments: string;
+        };
+        PassportGenerationResponse: {
+            success: boolean;
+            passport: components["schemas"]["PilotPassportResponse"];
         };
     };
     responses: never;

@@ -15,4 +15,3 @@ declare global {
 
 // Structured schemas exported for convenient development use
 export type ErrorResponse = components['schemas']['ErrorResponse'];
-export type PaginationMeta = components['schemas']['PaginationMeta'];

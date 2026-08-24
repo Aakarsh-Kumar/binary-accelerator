@@ -1,11 +1,211 @@
+datasource db {
+  provider = "sqlite"
+}
+
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "cockroachdb"
+model User {
+  id                  String   @id @default(uuid())
+  email               String   @unique
+  name                String
+  role                String   // "GOVERNMENT", "STARTUP", "EVALUATOR"
+  onboardingCompleted Boolean  @default(false)
+  username            String   @unique
+  avatarUrl           String?
+  passwordHash        String
+  createdAt           DateTime @default(now())
+  
+  startupProfile      StartupProfile?
+  evaluations         Evaluation[]
+  audits              AuditLog[]
 }
 
-enum crdb_internal_region {
-  aws_ap_south_1 @map("aws-ap-south-1")
+model StartupProfile {
+  id                 String   @id @default(uuid())
+  userId             String   @unique
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name               String
+  industry           String
+  technology         String
+  teamSize           Int
+  yearsOperating     Int
+  productDescription String
+  technologies       String   // Comma-separated or JSON string
+  deployments        String   // Text detailing deployments
+  certifications     String   // Comma-separated or text
+  createdAt          DateTime @default(now())
+  
+  applications       Application[]
+  pilots             Pilot[]
+}
+
+model Challenge {
+  id                  String   @id @default(uuid())
+  title               String
+  department          String
+  sector              String
+  problemDescription  String
+  baseline            String
+  expectedOutcome     String
+  budget              Float
+  duration            String
+  location            String
+  eligibility         String
+  successKpis         String
+  status              String   // "DRAFT", "PUBLISHED", "CLOSED"
+  createdById         String
+  createdAt           DateTime @default(now())
+  
+  applications        Application[]
+  pilots              Pilot[]
+}
+
+model Application {
+  id                  String   @id @default(uuid())
+  challengeId         String
+  challenge           Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  startupId           String
+  startup             StartupProfile @relation(fields: [startupId], references: [id], onDelete: Cascade)
+  proposedSolution    String
+  technicalApproach   String
+  implementationPlan  String
+  expectedImpact      String
+  pilotPlan           String
+  estimatedCost       Float
+  supportingDocuments String
+  eligibilityStatus   String   // "SUBMITTED", "ELIGIBILITY_REVIEW", "ELIGIBLE", "INELIGIBLE", "UNDER_EVALUATION", "SHORTLISTED", "SELECTED", "REJECTED"
+  compatibilityScore  Float    // overall match percentage
+  matchDetails        String   // JSON string containing detailed match scores
+  createdAt           DateTime @default(now())
+  
+  evaluations         Evaluation[]
+  pilots              Pilot[]
+}
+
+model Evaluation {
+  id                     String   @id @default(uuid())
+  applicationId          String
+  application            Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  evaluatorId            String
+  evaluator              User     @relation(fields: [evaluatorId], references: [id], onDelete: Cascade)
+  hasConflict            Boolean  @default(false)
+  scoreTechnicalFit      Float
+  scoreProblemFit        Float
+  scoreInnovation        Float
+  scoreScalability       Float
+  scoreCostEffectiveness Float
+  scoreCybersecurity     Float
+  scoreTeamCapability    Float
+  totalScore             Float
+  comments               String
+  strengths              String
+  risks                  String
+  recommendation         String
+  createdAt              DateTime @default(now())
+}
+
+model Pilot {
+  id             String   @id @default(uuid())
+  startupId      String
+  startup        StartupProfile @relation(fields: [startupId], references: [id], onDelete: Cascade)
+  challengeId    String
+  challenge      Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  applicationId  String
+  application    Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  location       String
+  startDate      String
+  endDate        String
+  budget         Float
+  objectives     String
+  status         String   // "DRAFT", "APPROVED", "ACTIVE", "COMPLETED", "VALIDATION", "VALIDATED", "FAILED"
+  scaleDecision  String?  // "SCALE_REVIEW", "READY_FOR_SCALE_REVIEW", "RE_PILOT", "CLOSE"
+  scaleScore     Float?
+  createdAt      DateTime @default(now())
+  
+  kpis           PilotKpi[]
+  milestones     PilotMilestone[]
+  evidence       PilotEvidence[]
+  validations    PilotValidation[]
+  passports      PilotPassport[]
+}
+
+model PilotKpi {
+  id           String   @id @default(uuid())
+  pilotId      String
+  pilot        Pilot    @relation(fields: [pilotId], references: [id], onDelete: Cascade)
+  name         String
+  unit         String
+  baseline     String
+  target       String
+  minimum      String
+  currentValue String?
+  evidenceUrl  String?
+  status       String   // e.g. "TARGET_ACHIEVED", "IN_PROGRESS", "FAILED"
+  createdAt    DateTime @default(now())
+}
+
+model PilotMilestone {
+  id            String   @id @default(uuid())
+  pilotId       String
+  pilot         Pilot    @relation(fields: [pilotId], references: [id], onDelete: Cascade)
+  name          String
+  description   String
+  deadline      String
+  deliverable   String
+  paymentAmount Float
+  status        String   // "PENDING", "APPROVED", "REJECTED"
+  evidenceUrl   String?
+  paymentStatus String   // "PENDING", "APPROVED"
+  createdAt     DateTime @default(now())
+}
+
+model PilotEvidence {
+  id          String   @id @default(uuid())
+  pilotId     String
+  pilot       Pilot    @relation(fields: [pilotId], references: [id], onDelete: Cascade)
+  type        String   // "KPI", "MILESTONE", "ACTIVITY"
+  entityId    String   // ID of the KPI or Milestone it belongs to (optional)
+  fileUrl     String
+  fileName    String
+  description String
+  uploadedBy  String
+  createdAt   DateTime @default(now())
+}
+
+model PilotValidation {
+  id                String   @id @default(uuid())
+  pilotId           String
+  pilot             Pilot    @relation(fields: [pilotId], references: [id], onDelete: Cascade)
+  validatorId       String
+  validatorName     String
+  startupClaim      String
+  target            String
+  evidence          String
+  measurementMethod String
+  independentResult String
+  status            String   // "VALIDATED", "PARTIALLY_VALIDATED", "NOT_VALIDATED"
+  comments          String
+  createdAt         DateTime @default(now())
+}
+
+model PilotPassport {
+  id             String   @id @default(uuid())
+  pilotId        String   @unique
+  pilot          Pilot    @relation(fields: [pilotId], references: [id], onDelete: Cascade)
+  passportNumber String   @unique
+  data           String   // JSON snapshot containing all required passport fields
+  scaleScore     Float
+  recommendation String   // "READY FOR SCALE-UP REVIEW", etc.
+  createdAt      DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String
+  details   String
+  timestamp DateTime @default(now())
 }

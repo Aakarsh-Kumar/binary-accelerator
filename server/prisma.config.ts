@@ -12,12 +12,4 @@ export default defineConfig({
   datasource: {
     url: process.env.DATABASE_URL!,
   },
-
-  experimental: {
-    externalTables: true,
-  },
-
-  enums: {
-    external: ["public.crdb_internal_region"],
-  },
 });

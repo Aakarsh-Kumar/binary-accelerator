@@ -8,7 +8,7 @@ import { errorHandler } from './middlewares/errorHandler';
 import logger from './utils/logger';
 import { extractClientIP, isPrivateOrLocalIP } from './utils/ipUtils';
 import HealthRoutes from './routes/health';
-import SampleRoutes from './routes/sample-route';
+import GovInnovateRoutes from './routes/govInnovateRoutes';
 import './types';
 const app = express();
 
@@ -104,18 +104,18 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
   const baseUrl = `${req.protocol}://${req.get('host')}`;
   res.json({
-    message: 'Welcome to Template API',
+    message: 'Welcome to GovInnovate API',
     status: 'success',
     version: '1.0.0',
-    iss: 'Connecity-API',
+    iss: 'GovInnovate-API',
     timestamp: new Date().toISOString(),
   });
 });
 
 // Health check route
 app.use('/api/health', HealthRoutes);
-// Sample route
-app.use('/api/sample', SampleRoutes);
+// GovInnovate routes
+app.use('/api/v1', GovInnovateRoutes);
 
 // 404 handler
 app.use((req, res) => {

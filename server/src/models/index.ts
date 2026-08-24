@@ -1,18 +1,9 @@
-import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
-import { Pool } from 'pg';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 
-import { config } from '../config/config';
-
-if (!config.databaseUrl) {
-	throw new Error('DATABASE_URL is required to initialize Prisma');
-}
-
-const pool = new Pool({
-	connectionString: config.databaseUrl,
+const adapter = new PrismaBetterSqlite3({
+  url: process.env.DATABASE_URL || 'file:dev.db',
 });
-
-const adapter = new PrismaPg(pool);
 
 const prisma = new PrismaClient({ adapter });
 

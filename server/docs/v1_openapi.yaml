@@ -1,21 +1,23 @@
 openapi: 3.1.0
 info:
-  title: Reusable API Template
+  title: GovInnovate API
   version: 1.0.0
-  description: |
-    Generic OpenAPI starter template for backend APIs.
-    Use this as a base for any project and replace the resource names as needed.
+  description: GovInnovate REST API for Government Innovation Procurement and Pilot Passport management.
 
 servers:
-  - url: http://localhost:3000/api/v1
+  - url: http://localhost:5000/api/v1
     description: Local development
-  - url: https://api.example.com/v1
-    description: Production
 
 tags:
-  - name: Health
   - name: Auth
-  - name: Users
+  - name: Challenges
+  - name: Startups
+  - name: Applications
+  - name: Evaluations
+  - name: Pilots
+  - name: Passports
+  - name: Audits
+  - name: Demo
 
 security:
   - bearerAuth: []
@@ -48,145 +50,1203 @@ components:
 
     SuccessResponse:
       type: object
-
       required:
         - success
         - message
-
       properties:
         success:
           type: boolean
           example: true
-
         message:
           type: string
           example: Operation successful
-    PaginationMeta:
-      type: object
-      required:
-        - page
-        - limit
-        - total
-        - hasMore
-      properties:
-        page:
-          type: integer
-          example: 1
-        limit:
-          type: integer
-          example: 20
-        total:
-          type: integer
-          example: 150
-        hasMore:
-          type: boolean
-          example: true
-    
+
     User:
+      type: object
       required:
         - id
         - email
         - name
+        - role
         - onboardingCompleted
         - username
-
       properties:
         id:
           type: string
-          format: uuid
-
-        name:
-          type: string
-
         email:
           type: string
-
+        name:
+          type: string
+        role:
+          type: string
         onboardingCompleted:
           type: boolean
-
         username:
           type: string
-
         avatarUrl:
           type: string
           nullable: true
 
-    #################################################
-    # REQUEST DTOs
-    #################################################
-
-    SampleRequest:
-      type: object
-
-      required:
-        - sample
-      properties:
-        sample:
-          type: string
-          maxLength: 2048
-
-    #################################################
-    # RESPONSE DTOs
-    #################################################
-
     AuthResponse:
       type: object
-
       required:
         - success
         - user
-
       properties:
         success:
           type: boolean
+        user:
+          $ref: '#/components/schemas/User'
+        token:
+          type: string
 
+    ChallengeRequest:
+      type: object
+      required:
+        - title
+        - department
+        - sector
+        - problemDescription
+        - baseline
+        - expectedOutcome
+        - budget
+        - duration
+        - location
+        - eligibility
+        - successKpis
+        - status
+      properties:
+        title:
+          type: string
+        department:
+          type: string
+        sector:
+          type: string
+        problemDescription:
+          type: string
+        baseline:
+          type: string
+        expectedOutcome:
+          type: string
+        budget:
+          type: number
+        duration:
+          type: string
+        location:
+          type: string
+        eligibility:
+          type: string
+        successKpis:
+          type: string
+        status:
+          type: string
+
+    ChallengeResponse:
+      type: object
+      required:
+        - id
+        - title
+        - department
+        - sector
+        - problemDescription
+        - baseline
+        - expectedOutcome
+        - budget
+        - duration
+        - location
+        - eligibility
+        - successKpis
+        - status
+        - createdById
+        - createdAt
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        department:
+          type: string
+        sector:
+          type: string
+        problemDescription:
+          type: string
+        baseline:
+          type: string
+        expectedOutcome:
+          type: string
+        budget:
+          type: number
+        duration:
+          type: string
+        location:
+          type: string
+        eligibility:
+          type: string
+        successKpis:
+          type: string
+        status:
+          type: string
+        createdById:
+          type: string
+        createdAt:
+          type: string
+
+    StartupProfileRequest:
+      type: object
+      required:
+        - name
+        - industry
+        - technology
+        - teamSize
+        - yearsOperating
+        - productDescription
+        - deployments
+        - certifications
+      properties:
+        name:
+          type: string
+        industry:
+          type: string
+        technology:
+          type: string
+        teamSize:
+          type: integer
+        yearsOperating:
+          type: integer
+        productDescription:
+          type: string
+        deployments:
+          type: string
+        certifications:
+          type: string
+
+    StartupProfileResponse:
+      type: object
+      required:
+        - id
+        - userId
+        - name
+        - industry
+        - technology
+        - teamSize
+        - yearsOperating
+        - productDescription
+        - deployments
+        - certifications
+        - createdAt
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        name:
+          type: string
+        industry:
+          type: string
+        technology:
+          type: string
+        teamSize:
+          type: integer
+        yearsOperating:
+          type: integer
+        productDescription:
+          type: string
+        deployments:
+          type: string
+        certifications:
+          type: string
+        createdAt:
+          type: string
+
+    ApplicationRequest:
+      type: object
+      required:
+        - challengeId
+        - proposedSolution
+        - technicalApproach
+        - implementationPlan
+        - expectedImpact
+        - pilotPlan
+        - estimatedCost
+        - supportingDocuments
+      properties:
+        challengeId:
+          type: string
+        proposedSolution:
+          type: string
+        technicalApproach:
+          type: string
+        implementationPlan:
+          type: string
+        expectedImpact:
+          type: string
+        pilotPlan:
+          type: string
+        estimatedCost:
+          type: number
+        supportingDocuments:
+          type: string
+
+    ApplicationResponse:
+      type: object
+      required:
+        - id
+        - challengeId
+        - startupId
+        - proposedSolution
+        - technicalApproach
+        - implementationPlan
+        - expectedImpact
+        - pilotPlan
+        - estimatedCost
+        - supportingDocuments
+        - eligibilityStatus
+        - compatibilityScore
+        - matchDetails
+        - createdAt
+      properties:
+        id:
+          type: string
+        challengeId:
+          type: string
+        startupId:
+          type: string
+        proposedSolution:
+          type: string
+        technicalApproach:
+          type: string
+        implementationPlan:
+          type: string
+        expectedImpact:
+          type: string
+        pilotPlan:
+          type: string
+        estimatedCost:
+          type: number
+        supportingDocuments:
+          type: string
+        eligibilityStatus:
+          type: string
+        compatibilityScore:
+          type: number
+        matchDetails:
+          type: string
+        createdAt:
+          type: string
+        challenge:
+          $ref: '#/components/schemas/ChallengeResponse'
+        startup:
+          $ref: '#/components/schemas/StartupProfileResponse'
+
+    AssignEvaluatorsRequest:
+      type: object
+      required:
+        - evaluatorIds
+      properties:
+        evaluatorIds:
+          type: array
+          items:
+            type: string
+
+    EvaluationRequest:
+      type: object
+      required:
+        - applicationId
+        - hasConflict
+        - scoreTechnicalFit
+        - scoreProblemFit
+        - scoreInnovation
+        - scoreScalability
+        - scoreCostEffectiveness
+        - scoreCybersecurity
+        - scoreTeamCapability
+        - comments
+        - strengths
+        - risks
+        - recommendation
+      properties:
+        applicationId:
+          type: string
+        hasConflict:
+          type: boolean
+        scoreTechnicalFit:
+          type: number
+        scoreProblemFit:
+          type: number
+        scoreInnovation:
+          type: number
+        scoreScalability:
+          type: number
+        scoreCostEffectiveness:
+          type: number
+        scoreCybersecurity:
+          type: number
+        scoreTeamCapability:
+          type: number
+        comments:
+          type: string
+        strengths:
+          type: string
+        risks:
+          type: string
+        recommendation:
+          type: string
+
+    EvaluationResponse:
+      type: object
+      required:
+        - id
+        - applicationId
+        - evaluatorId
+        - hasConflict
+        - scoreTechnicalFit
+        - scoreProblemFit
+        - scoreInnovation
+        - scoreScalability
+        - scoreCostEffectiveness
+        - scoreCybersecurity
+        - scoreTeamCapability
+        - totalScore
+        - comments
+        - strengths
+        - risks
+        - recommendation
+        - createdAt
+      properties:
+        id:
+          type: string
+        applicationId:
+          type: string
+        evaluatorId:
+          type: string
+        hasConflict:
+          type: boolean
+        scoreTechnicalFit:
+          type: number
+        scoreProblemFit:
+          type: number
+        scoreInnovation:
+          type: number
+        scoreScalability:
+          type: number
+        scoreCostEffectiveness:
+          type: number
+        scoreCybersecurity:
+          type: number
+        scoreTeamCapability:
+          type: number
+        totalScore:
+          type: number
+        comments:
+          type: string
+        strengths:
+          type: string
+        risks:
+          type: string
+        recommendation:
+          type: string
+        createdAt:
+          type: string
+        evaluator:
+          $ref: '#/components/schemas/User'
+
+    PilotKpiResponse:
+      type: object
+      required:
+        - id
+        - name
+        - unit
+        - baseline
+        - target
+        - minimum
+        - currentValue
+        - status
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        unit:
+          type: string
+        baseline:
+          type: string
+        target:
+          type: string
+        minimum:
+          type: string
+        currentValue:
+          type: string
+          nullable: true
+        evidenceUrl:
+          type: string
+          nullable: true
+        status:
+          type: string
+
+    PilotMilestoneResponse:
+      type: object
+      required:
+        - id
+        - name
+        - description
+        - deadline
+        - deliverable
+        - paymentAmount
+        - status
+        - paymentStatus
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        deadline:
+          type: string
+        deliverable:
+          type: string
+        paymentAmount:
+          type: number
+        status:
+          type: string
+        evidenceUrl:
+          type: string
+          nullable: true
+        paymentStatus:
+          type: string
+
+    PilotValidationResponse:
+      type: object
+      required:
+        - id
+        - validatorId
+        - validatorName
+        - startupClaim
+        - target
+        - evidence
+        - measurementMethod
+        - independentResult
+        - status
+        - comments
+      properties:
+        id:
+          type: string
+        validatorId:
+          type: string
+        validatorName:
+          type: string
+        startupClaim:
+          type: string
+        target:
+          type: string
+        evidence:
+          type: string
+        measurementMethod:
+          type: string
+        independentResult:
+          type: string
+        status:
+          type: string
+        comments:
+          type: string
+
+    PilotPassportResponse:
+      type: object
+      required:
+        - id
+        - pilotId
+        - passportNumber
+        - data
+        - scaleScore
+        - recommendation
+        - createdAt
+      properties:
+        id:
+          type: string
+        pilotId:
+          type: string
+        passportNumber:
+          type: string
+        data:
+          type: string
+        scaleScore:
+          type: number
+        recommendation:
+          type: string
+        createdAt:
+          type: string
+
+    PilotResponse:
+      type: object
+      required:
+        - id
+        - startupId
+        - challengeId
+        - applicationId
+        - location
+        - startDate
+        - endDate
+        - budget
+        - objectives
+        - status
+        - createdAt
+      properties:
+        id:
+          type: string
+        startupId:
+          type: string
+        challengeId:
+          type: string
+        applicationId:
+          type: string
+        location:
+          type: string
+        startDate:
+          type: string
+        endDate:
+          type: string
+        budget:
+          type: number
+        objectives:
+          type: string
+        status:
+          type: string
+        scaleDecision:
+          type: string
+          nullable: true
+        scaleScore:
+          type: number
+          nullable: true
+        createdAt:
+          type: string
+        challenge:
+          $ref: '#/components/schemas/ChallengeResponse'
+        startup:
+          $ref: '#/components/schemas/StartupProfileResponse'
+        kpis:
+          type: array
+          items:
+            $ref: '#/components/schemas/PilotKpiResponse'
+        milestones:
+          type: array
+          items:
+            $ref: '#/components/schemas/PilotMilestoneResponse'
+        validations:
+          type: array
+          items:
+            $ref: '#/components/schemas/PilotValidationResponse'
+        passports:
+          type: array
+          items:
+            $ref: '#/components/schemas/PilotPassportResponse'
+
+    AuditLogResponse:
+      type: object
+      required:
+        - id
+        - action
+        - details
+        - timestamp
+      properties:
+        id:
+          type: string
+        action:
+          type: string
+        details:
+          type: string
+        timestamp:
+          type: string
         user:
           $ref: '#/components/schemas/User'
 
+    PilotRequest:
+      type: object
+      required:
+        - applicationId
+        - startDate
+        - endDate
+        - location
+        - budget
+        - objectives
+        - kpis
+        - milestones
+      properties:
+        applicationId:
+          type: string
+        startDate:
+          type: string
+        endDate:
+          type: string
+        location:
+          type: string
+        budget:
+          type: number
+        objectives:
+          type: string
+        kpis:
+          type: array
+          items:
+            type: object
+            required:
+              - name
+              - unit
+              - baseline
+              - target
+              - minimum
+            properties:
+              name:
+                type: string
+              unit:
+                type: string
+              baseline:
+                type: string
+              target:
+                type: string
+              minimum:
+                type: string
+        milestones:
+          type: array
+          items:
+            type: object
+            required:
+              - name
+              - description
+              - deadline
+              - deliverable
+              - paymentAmount
+            properties:
+              name:
+                type: string
+              description:
+                type: string
+              deadline:
+                type: string
+              deliverable:
+                type: string
+              paymentAmount:
+                type: number
+
+    UpdateKpiRequest:
+      type: object
+      required:
+        - currentValue
+        - evidenceUrl
+      properties:
+        currentValue:
+          type: string
+        evidenceUrl:
+          type: string
+
+    UpdateMilestoneRequest:
+      type: object
+      required:
+        - evidenceUrl
+      properties:
+        evidenceUrl:
+          type: string
+
+    ValidationRequest:
+      type: object
+      required:
+        - startupClaim
+        - target
+        - evidence
+        - measurementMethod
+        - independentResult
+        - status
+        - comments
+      properties:
+        startupClaim:
+          type: string
+        target:
+          type: string
+        evidence:
+          type: string
+        measurementMethod:
+          type: string
+        independentResult:
+          type: string
+        status:
+          type: string
+        comments:
+          type: string
+
+    PassportGenerationResponse:
+      type: object
+      required:
+        - success
+        - passport
+      properties:
+        success:
+          type: boolean
+        passport:
+          $ref: '#/components/schemas/PilotPassportResponse'
 
 paths:
-  /health:
-    get:
-      tags:
-        - Health
-      summary: Health check
-      security: []
-      responses:
-        '200':
-          description: API is healthy
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - success
-                  - message
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: API is running
-
-  /sample-endpoint:
-    get:
+  /auth/login:
+    post:
       tags:
         - Auth
-      summary: sample
+      summary: Login user
       security: []
       requestBody:
         required: true
-
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SampleRequest'
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
       responses:
         '200':
-          description: API for sample
+          description: Logged in successfully
           content:
             application/json:
-              schema: 
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+
+  /auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: Logout user
+      responses:
+        '200':
+          description: Logged out successfully
+          content:
+            application/json:
+              schema:
                 $ref: '#/components/schemas/SuccessResponse'
 
+  /auth/me:
+    get:
+      tags:
+        - Auth
+      summary: Get current authenticated user
+      responses:
+        '200':
+          description: User profiles fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+
+  /challenges:
+    get:
+      tags:
+        - Challenges
+      summary: Get list of challenges
+      security: []
+      responses:
+        '200':
+          description: List of challenges
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChallengeResponse'
+    post:
+      tags:
+        - Challenges
+      summary: Create outcome challenge
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChallengeRequest'
+      responses:
+        '201':
+          description: Challenge created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChallengeResponse'
+
+  /challenges/{id}:
+    get:
+      tags:
+        - Challenges
+      summary: Get challenge details
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Challenge details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChallengeResponse'
+
+  /startups/profile:
+    post:
+      tags:
+        - Startups
+      summary: Save startup profile details
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartupProfileRequest'
+      responses:
+        '200':
+          description: Profile updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StartupProfileResponse'
+
+  /applications:
+    get:
+      tags:
+        - Applications
+      summary: List challenge applications
+      parameters:
+        - name: challengeId
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Application records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApplicationResponse'
+    post:
+      tags:
+        - Applications
+      summary: Apply to challenge with solution
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationRequest'
+      responses:
+        '201':
+          description: Application submitted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationResponse'
+
+  /applications/{id}/assign:
+    post:
+      tags:
+        - Applications
+      summary: Assign evaluators to application
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignEvaluatorsRequest'
+      responses:
+        '200':
+          description: Evaluators assigned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /evaluations:
+    get:
+      tags:
+        - Evaluations
+      summary: List evaluations
+      responses:
+        '200':
+          description: List of evaluations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EvaluationResponse'
+    post:
+      tags:
+        - Evaluations
+      summary: Submit evaluator score
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EvaluationRequest'
+      responses:
+        '201':
+          description: Evaluation submitted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvaluationResponse'
+
+  /pilots:
+    get:
+      tags:
+        - Pilots
+      summary: List pilots
+      responses:
+        '200':
+          description: List of pilots
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PilotResponse'
+    post:
+      tags:
+        - Pilots
+      summary: Initialize startup pilot
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PilotRequest'
+      responses:
+        '201':
+          description: Pilot initialized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PilotResponse'
+
+  /pilots/{id}:
+    get:
+      tags:
+        - Pilots
+      summary: Get details of active pilot
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Pilot details with KPIs & Milestones
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PilotResponse'
+
+  /pilots/{id}/kpis/{kpiId}:
+    put:
+      tags:
+        - Pilots
+      summary: Update pilot KPI metrics
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: kpiId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateKpiRequest'
+      responses:
+        '200':
+          description: KPI updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /pilots/{id}/milestones/{milestoneId}:
+    put:
+      tags:
+        - Pilots
+      summary: Update pilot milestone status/evidence
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: milestoneId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMilestoneRequest'
+      responses:
+        '200':
+          description: Milestone evidence uploaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /pilots/{id}/milestones/{milestoneId}/approve:
+    post:
+      tags:
+        - Pilots
+      summary: Approve pilot milestone and release payment status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: milestoneId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Milestone approved and paid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /pilots/{id}/validate:
+    post:
+      tags:
+        - Pilots
+      summary: Submit validator evaluation results
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidationRequest'
+      responses:
+        '200':
+          description: Validation submitted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /pilots/{id}/passport:
+    get:
+      tags:
+        - Passports
+      summary: Get generated passport detail
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Pilot Passport detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PilotPassportResponse'
+    post:
+      tags:
+        - Passports
+      summary: Generate a Pilot Passport
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Passport generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PassportGenerationResponse'
+
+  /passports/repository:
+    get:
+      tags:
+        - Passports
+      summary: Query evidence repository
+      security: []
+      parameters:
+        - name: query
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Filtered passport details
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PilotPassportResponse'
+
+  /audits:
+    get:
+      tags:
+        - Audits
+      summary: Get all system audit events
+      responses:
+        '200':
+          description: System audits list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditLogResponse'
+
+  /demo/reset:
+    post:
+      tags:
+        - Demo
+      summary: Reset and seed demo databases
+      security: []
+      responses:
+        '200':
+          description: Database successfully seeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
