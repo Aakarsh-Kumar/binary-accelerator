@@ -27,19 +27,19 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center bg-gradient-to-r from-teal-600 to-emerald-600 dark:from-teal-800 dark:to-emerald-800 text-white p-8 rounded-3xl shadow-lg">
+      <div className="flex justify-between items-center bg-stone-900 border border-stone-800 text-stone-100 p-8 rounded-3xl shadow-sm">
         <div>
-          <span className="text-xs uppercase font-bold tracking-widest text-teal-200">
+          <span className="text-xs uppercase font-bold tracking-widest text-stone-400">
             Welcome back
           </span>
           <h2 className="text-2xl font-black mt-1">{user.name}</h2>
-          <p className="text-xs text-teal-100 mt-0.5">
+          <p className="text-xs text-stone-300 mt-0.5">
             Role: <span className="font-bold">{user.role}</span> | Username: @{user.username}
           </p>
         </div>
         <div className="text-right hidden sm:block">
           <span className="block text-2xl font-black">{new Date().toLocaleDateString("en-IN", { month: "short", day: "numeric" })}</span>
-          <span className="text-xs text-teal-200">Innovation Cycle 2026</span>
+          <span className="text-xs text-stone-400">Innovation Cycle 2026</span>
         </div>
       </div>
 
